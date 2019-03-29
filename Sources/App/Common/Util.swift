@@ -7,6 +7,8 @@
 
 import JSONConfig
 import Foundation
+import PerfectLib
+import PostgresStORM
 #if os(Linux) || os(Android) || os(FreeBSD)
 import Glibc
 #else
@@ -45,12 +47,39 @@ struct TestUtil {
     
     public static func setup() {
         //self.test_RandomNumber()
+        //self.test_Fts_TestData()
     }
     
     //MAKR: - 测试随机数生成
     fileprivate static func test_RandomNumber() {
         for _ in 0..<10 {
             print(Util.randomNumber(min: 10, max: 20))
+        }
+    }
+    
+    //MARK: - 全文检索测试, 将德哥的博客作为测试数据保存到数据库
+    //https://github.com/digoal/blog/blob
+    fileprivate static func test_Fts_TestData() {
+        let path = "./data"                                 //数据目录
+        let dirs = Dir.dirs(path: path)                     //遍历文件夹
+        let topic = TopicModel()
+        do {
+            var data: [(String, String)] = []
+            try dirs.forEach { dir in                       //读取文件
+                let body = try File.readfile(path: dir)
+                var title = ""
+                if let index = body.firstIndex(of: "\n") {  //获取标题
+                    title = String(body[body.startIndex..<index])
+                }
+                data.append((title, body))
+            }
+            try PostgresStORM.doWithTransaction(closure: {      //数据存储
+                try data.forEach { d in
+                    try topic.add(title: d.0, body: d.1)
+                }
+            })
+        } catch {
+            
         }
     }
 }

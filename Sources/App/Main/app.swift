@@ -28,12 +28,6 @@ public func app() -> HTTPServer {
 	//MARK: - 路由初始化
 	server.addRoutes(initializeRoute())
 
-	//MARK: - 过滤器初始化
-    let realm = BaseRealm()
-    let turnstile = TurnstilePerfect.init(realm: realm)
-    server.setRequestFilters(baseRequestFilter(turnstile: turnstile))
-	server.setResponseFilters(baseResponseFilter(turnstile: turnstile))
-
 	//MARK: - 测试初始化
 	TestUtil.setup()
 

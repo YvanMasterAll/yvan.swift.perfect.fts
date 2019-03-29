@@ -56,6 +56,42 @@ extension PostgresStORM {
             throw error
         }
     }
+    
+    /// 查询优化, 全文检索
+    ///
+    /// - Parameters:
+    ///   - tsv: 检索字段, tsvector
+    ///   - kw: 关键字
+    ///   - cursor: 查询游标
+    open func fts_find(tsv: String, kw: String, body: String, cursor: StORMCursor) throws {
+        var clauseSelectList = "*"
+        if let columns = columns(), columns.count > 0 {
+            clauseSelectList = columns.map { column -> String in
+                let k = column.split(".")
+                if k.count == 2 {
+                    return "\(k[0]).\"\(k[1])\""
+                }
+                return k[0]
+                }.joined(separator: ",")
+        } else {
+            var keys = [String]()
+            for i in cols() {
+                keys.append(i.0)
+            }
+            clauseSelectList = "\""+keys.joined(separator: "\",\"")+"\""
+        }
+        let statement = "select \(clauseSelectList), ts_rank_cd(\(tsv), query) rank, "
+        + "ts_headline('zhcnsearch', \(body), to_tsquery('zhcnsearch', $1), 'StartSel=<u-highlight-fts>, StopSel=</u-highlight-fts>') body_h "
+        + "from \(table()), to_tsquery('zhcnsearch', $1) query "
+        + "where \(tsv) @@ query order by rank desc"
+        let params: [Any] = [kw]
+        do {
+            try sql_ex(statement, params: params, cursor: cursor)
+        } catch {
+            LogFile.error("Error: \(error)", logFile: "./StORMlog.txt")
+            throw error
+        }
+    }
 
     /// 查询优化, 更新语句
     ///

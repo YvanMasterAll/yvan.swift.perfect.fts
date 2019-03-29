@@ -25,7 +25,7 @@ extension String {
     ///   - pattern: 正则表达式
     ///   - target: 目标字符串
     /// - Returns: 检索结果, 字符串数组
-    public func regex(pattern: String, target: String) -> [String] {
+    public static func regex(pattern: String, target: String) -> [String] {
         var subs = [String]()
         let regex = try! NSRegularExpression(pattern: pattern,
                                              options:[NSRegularExpression.Options.caseInsensitive])

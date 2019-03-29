@@ -1,7 +1,48 @@
 import XCTest
 import class Foundation.Bundle
+import App
+import PerfectLib
 
 final class AppTests: BaseTestCase {
+    
+    //MARK: - IO测试
+    func test_IO() {
+        let path = "./data"
+        test_IO_001(path: path)
+        print("2")
+    }
+    func test_IO_001(path: String) {
+        let dir = Dir.init(path)
+        do {
+            var entries: [String] = []
+            try dir.forEachEntry(closure: { d in
+                if !d.startsWith(".") {
+                    entries.append("\(dir.path)\(d)")
+                }
+            })
+            entries.forEach { entry in
+                if File(entry).isDir {
+                    test_IO_001(path: entry)
+                } else {
+                    print(entry)
+                }
+            }
+        } catch {
+            print(error)
+        }
+    }
+    
+    //MARK: - 全文检索测试, 过滤搜索结果, 选取片段
+    func test_Fts_FilterResult() {
+        let body_h: String = """
+天气<u-highlight-fts>天</u-highlight-fts>气转暖，
+春风<u-highlight-fts>春</u-highlight-fts>风和煦天气<u-highlight-fts>天</u-highlight-fts>气转暖，
+春风<u-highlight-fts>春</u-highlight-fts>风和煦天气<u-highlight-fts>天</u-highlight-fts>气转暖，春风<u-highlight-fts>春</u-highlight-fts>风和煦天气<u-highlight-fts>天</u-highlight-fts>气
+转暖，春风<u-highlight-fts>春</u-highlight-fts>风和煦
+"""
+        let results = String.regex(pattern: "<u-highlight-fts>[\\S]*", target: body_h)
+        print(results[0])
+    }
     
     //MARK: - 测试网络
     func test_Network() {
