@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>全文检索测试页面</title>
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+	<link rel="stylesheet" href="/assets/css/regular.css">
+	<link rel="stylesheet" href="/assets/css/prime.css">
+</head>
+<body>
+	<div class="o-wrapper">
+		<div class="o-body">
+			<div class="o-content">
+				<!-- content append here -->
+			</div>
+		</div>
+	</div>
+	<!-- jQuery -->
+	<script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			$.ajax({
+                url: "/views/fts_search.htm",
+                type: "get",
+                data: {},
+                dataType: "html",
+                timeout: 10000,
+                cache: false,
+                beforeSend:function(XMLHttpRequest){
+                   	//TODO: 显示菊花
+                },
+                complete:function(XMLHttpRequest, textStatus){
+                    //data
+                    var html = XMLHttpRequest.responseText
+                    $('.o-body').append($(html))
+                },
+                error:function(XmlHttpRequest, textStatus, errorThrown){
+                    //TODO: 隐藏菊花
+                    console.log("网络请求失败, 错误代码: " + XmlHttpRequest.status + "!")
+                }
+            });
+		})
+	</script>
+</body>
+</html>
