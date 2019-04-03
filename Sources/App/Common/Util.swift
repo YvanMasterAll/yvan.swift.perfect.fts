@@ -61,19 +61,22 @@ struct TestUtil {
     //https://github.com/digoal/blog/blob
     fileprivate static func test_Fts_TestData() {
         let path = "./data"                                 //数据目录
-        let dirs = Dir.dirs(path: path)                     //遍历文件夹
+        let dirs = Dir.dirs_file(path: path)                //遍历文件夹
         let topic = TopicModel()
         do {
             var data: [(String, String)] = []
             try dirs.forEach { dir in                       //读取文件
+                guard dir.endsWith(".md") else { return }
                 let body = try File.readfile(path: dir)
                 var title = ""
                 if let index = body.firstIndex(of: "\n") {  //获取标题
                     title = String(body[body.startIndex..<index])
                 }
                 data.append((title, body))
+                //yTest
+                print(dir)
             }
-            try PostgresStORM.doWithTransaction(closure: {      //数据存储
+            try PostgresStORM.doWithTransaction(closure: {  //数据存储
                 try data.forEach { d in
                     try topic.add(title: d.0, body: d.1)
                 }

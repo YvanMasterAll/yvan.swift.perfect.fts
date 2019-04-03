@@ -13,7 +13,7 @@ extension Dir {
     ///
     /// - Parameter path: 目录
     /// - Returns: 返回所有文件目录
-    static func dirs(path: String) -> [String] {
+    static func dirs_file(path: String) -> [String] {
         let dir = Dir.init(path)
         var drs: [String] = []
         do {
@@ -25,7 +25,7 @@ extension Dir {
             })
             entries.forEach { entry in
                 if File(entry).isDir {
-                    drs.append(contentsOf: dirs(path: entry))
+                    drs.append(contentsOf: dirs_file(path: entry))
                 } else {
                     drs.append(entry)
                 }

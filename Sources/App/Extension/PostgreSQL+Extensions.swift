@@ -80,8 +80,8 @@ extension PostgresStORM {
             }
             clauseSelectList = "\""+keys.joined(separator: "\",\"")+"\""
         }
-        let statement = "select \(clauseSelectList), ts_rank_cd(\(tsv), query) rank, "
-        + "ts_headline('zhcnsearch', \(body), to_tsquery('zhcnsearch', $1), 'StartSel=<u-highlight-fts>, StopSel=</u-highlight-fts>') body_h "
+        let statement = "select \(clauseSelectList), ts_rank_cd(\(tsv), query) rank, query "
+        //+ ",ts_headline('zhcnsearch', \(body), query, 'StartSel=<u-highlight-fts>, StopSel=</u-highlight-fts>') body_h "
         + "from \(table()), to_tsquery('zhcnsearch', $1) query "
         + "where \(tsv) @@ query order by rank desc"
         let params: [Any] = [kw]

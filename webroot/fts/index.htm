@@ -17,6 +17,10 @@
 	</div>
 	<!-- jQuery -->
 	<script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+	<script src="//cdn.bootcss.com/marked/0.6.1/marked.min.js"></script>
+	<script src="/assets/js/regular.js"></script>
+	<script src="/assets/js/prime.js"></script>
+	<script src="/assets/js/modal.js"></script>
 	<script>
 		$(document).ready(function(){
 			$.ajax({
@@ -36,7 +40,7 @@
                 },
                 error:function(XmlHttpRequest, textStatus, errorThrown){
                     //TODO: 隐藏菊花
-                    console.log("网络请求失败, 错误代码: " + XmlHttpRequest.status + "!")
+                    console.log("请求失败, 错误代码: " + XmlHttpRequest.status + "!")
                 }
             });
 		})

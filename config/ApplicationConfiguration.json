@@ -1,0 +1,19 @@
+{
+    "url"           : "http://localhost:8181",
+	"domain"        : "",
+    "document"      : "webroot",
+    
+	"server_port"   : 8181,
+    "db_host"       : "localhost",
+    "db_username"   : "fts",
+    "db_password"   : "fts",
+    "db_name"       : "db_fts",
+    "db_port"       : 5432,
+    
+    "iserver_port"  : 80,
+    "idb_host"      : "172.16.16.2",
+    "idb_username"  : "shutuer",
+    "idb_password"  : "shutuer",
+    "idb_name"      : "postgres",
+    "idb_port"      : 5432
+}

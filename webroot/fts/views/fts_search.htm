@@ -2,18 +2,79 @@
 
 
 <div class="o-content">
-	<div class="o-grid">
+	<div class="o-grid" style="margin-top: 4em;">
 		<div class="c-search">
 			<input type="text" class="c-input">
 			<button class="c-button u-fsc--18r">搜索</button>
 		</div>
 	</div>
 	<div class="o-grid">
-		<div class="c-list-fts">
-			<div class="c-list-fts__item">
+		<div class="c-list--fts">
+			<div class="c-divider"/>
+			<!-- <div class="c-list--fts__item">
 				<a class="c-heading u-fsc--18m">标题</a>
 				<p class="c-paragraph u-fsc--16r">文本</p>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </div>
+
+<script>
+	$(document).ready(function(){
+		//搜索事件
+		$('.c-search>.c-button').on('click', function() {
+			search()
+		})
+		//搜索功能
+		function search() {
+			//yTest
+			let beginTime = +new Date()
+			let kw = $('.c-search>.c-input').val()
+			if($.trim(kw) == "") { return }
+			let data = { "kw": kw }
+			$.ajax({
+		        url: "http://localhost:8181/api/v1/topic/search",
+		        type: "post",
+		        data: data,
+		        dataType: "json",
+		        timeout: 10000,
+		        cache: false,
+		        beforeSend:function(XMLHttpRequest){
+		           	//TODO: 显示菊花
+		        },
+		        complete:function(XMLHttpRequest, textStatus){
+		            //data
+		            let json = eval('('+ XMLHttpRequest.responseText + ')')
+		            let code = json.code
+		            let data = json.dataDicts
+		            if(fts.result.valid(code)) {
+		            	$('.c-list--fts__item').remove()
+		            	$.each(data, function(i, d) {
+		            		let item = $('<div class="c-list--fts__item">' +
+		            			'<a class="c-heading u-fsc--18m">' + d.title + '</a>' +
+		            			'<p class="c-paragraph u-fsc--16r">' + d.body_hp + '</p>' +
+		            		'</div>')
+		            		$('.c-list--fts').append(item)
+		            	})
+		            	//yTest
+						$('.o-body').modal({type: 'markdown'}).append(marked(data[0].body))
+		            }
+		            //yTest
+		            let endTime = +new Date()
+					console.log("请求共计用时: "+(endTime-beginTime)+"ms")
+		        },
+		        error:function(XmlHttpRequest, textStatus, errorThrown){
+		            //TODO: 隐藏菊花
+		            console.log("请求失败, 错误代码: " + XmlHttpRequest.status + "!")
+		        }
+		    })
+		}
+	})
+</script>
+
+<!-- let beginTime = +new Date()
+let endTime = +new Date()
+console.log("排序用时共计"+(endTime-beginTime)+"ms") -->
+
+
+

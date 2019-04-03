@@ -12,7 +12,8 @@ let package = Package(
 		.package(url: "https://github.com/PerfectlySoft/Perfect-HTTPServer.git", "3.0.0"..<"4.0.0"),
 		.package(url: "https://github.com/SwiftORM/Postgres-StORM.git", "3.0.0"..<"4.0.0"),
 		.package(url: "https://github.com/PerfectlySoft/Perfect-PostgreSQL.git", "3.0.0"..<"4.0.0"),
-        .package(url: "https://github.com/PerfectlySoft/Perfect-Mustache.git", from: "3.0.2")
+        .package(url: "https://github.com/PerfectlySoft/Perfect-Mustache.git", from: "3.0.2"), 
+        .package(url: "https://github.com/iamjono/SwiftString.git", from: "2.0.0")
 	],
 	targets: [
 		.target(name: "App", dependencies: [
@@ -22,6 +23,7 @@ let package = Package(
 			"PostgresStORM", 			//PostgreSQL ORM
 			"PerfectPostgreSQL",		//PostgreSQL Provider
 			"PerfectMustache",			//模板引擎
+			"SwiftString"
 			]),
         .target(
             name: "Run",

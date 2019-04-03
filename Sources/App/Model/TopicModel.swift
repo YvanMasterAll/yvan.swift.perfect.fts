@@ -18,6 +18,7 @@ class TopicModel: BaseModel {
     var title           : String        = ""
     var body            : String        = ""
     var rank            : Float         = 0
+    var query           : String        = ""
     var body_h          : String        = ""
     
     override open func table() -> String {  return "fts_topic"  }
@@ -36,6 +37,7 @@ class TopicModel: BaseModel {
         if let v = this.data["title"]   as? String  { title  = v }
         if let v = this.data["body"]    as? String  { body   = v }
         if let v = this.data["rank"]    as? Float   { rank   = v }
+        if let v = this.data["query"]   as? String  { query  = v }
         if let v = this.data["body_h"]  as? String  { body_h = v }
     }
     public func rows() -> [TopicModel] {
@@ -58,15 +60,32 @@ extension TopicModel {
         return rows().map() { k in
             var topic = k.toDict()
             //TODO: 如果文档长度小, 直接返回
-            let t: [String] = String.regex(pattern: "<u-highlight-fts>[\\S]*", target: k.body_h)
-            if t.count > 0 {
-                //TODO: 如果文档长度小, 组合多个结果
-                topic["body_hp"] = t[0]
-            } else {
-                topic["body_hp"] = k.body_h
-            }
+            let ws = k.query.replacingOccurrences(of: " ", with: "")
+                .replacingOccurrences(of: "'", with: "")
+                .split("&")
+            let ps = headline(ws: ws, body: k.body)
+            topic["body_hp"] = ps
             return topic
         }
+    }
+    
+    //MARK: - 关键字高亮
+    func headline(ws: [String], body: String) -> String {
+        var ps = ""
+        let _ps = body.split("\n")
+        var pc = 0
+        for p in _ps {
+            pc += pc
+            for w in ws {
+                if p.lowercased().contains(string: w) {
+                    let _p = p.replacingOccurrences(of: w, with: "<u-highlight-fts>\(w)</u-highlight-fts>", options: .caseInsensitive)
+                    ps.append(_p + "...")
+                    break
+                }
+            }
+            if ps.count > 200 { break }
+        }
+        return ps
     }
     
     //MARK: - 话题添加

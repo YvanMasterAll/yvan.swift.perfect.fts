@@ -146,15 +146,6 @@
         }
       },
       {
-        "package": "PerfectWebSockets",
-        "repositoryURL": "https://github.com/PerfectlySoft/Perfect-WebSockets.git",
-        "state": {
-          "branch": null,
-          "revision": "30df21244dfbdccd9d6ea09033fb6dc2b7a84ab4",
-          "version": "3.1.0"
-        }
-      },
-      {
         "package": "PerfectLib",
         "repositoryURL": "https://github.com/PerfectlySoft/PerfectLib.git",
         "state": {
@@ -197,33 +188,6 @@
           "branch": null,
           "revision": "8017b12c3e20cf8fe4f9b5538a3aaf89562036c2",
           "version": "2.1.1"
-        }
-      },
-      {
-        "package": "SwiftValidators",
-        "repositoryURL": "https://github.com/YvanMasterAll/SwiftValidators.git",
-        "state": {
-          "branch": null,
-          "revision": "9216edf4b712147c0bc556f8d876836db7c9418d",
-          "version": "9.0.4"
-        }
-      },
-      {
-        "package": "Turnstile",
-        "repositoryURL": "https://github.com/YvanMasterAll/Turnstile",
-        "state": {
-          "branch": null,
-          "revision": "93bf54571ff61cfbd4ab291ea3f835e490cab772",
-          "version": "2.0.4"
-        }
-      },
-      {
-        "package": "TurnstilePerfect",
-        "repositoryURL": "https://github.com/YvanMasterAll/Turnstile-Perfect.git",
-        "state": {
-          "branch": null,
-          "revision": "113f90da63622698d2a781523bc8d86d1617f285",
-          "version": "2.0.2"
         }
       }
     ]

@@ -10,7 +10,6 @@ import StORM
 import PerfectHTTPServer
 import PostgresStORM
 import PerfectRequestLogger
-import TurnstilePerfect
 
 public func app() -> HTTPServer {
 	//MARK: - 创建服务
@@ -27,6 +26,10 @@ public func app() -> HTTPServer {
 
 	//MARK: - 路由初始化
 	server.addRoutes(initializeRoute())
+
+	//MARK: - 过滤器初始化
+	server.setRequestFilters(baseRequestFilter())
+	server.setResponseFilters(baseResponseFilter())
 
 	//MARK: - 测试初始化
 	TestUtil.setup()
