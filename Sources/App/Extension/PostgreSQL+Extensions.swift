@@ -80,9 +80,12 @@ extension PostgresStORM {
             }
             clauseSelectList = "\""+keys.joined(separator: "\",\"")+"\""
         }
-        let statement = "select \(clauseSelectList), ts_rank_cd(\(tsv), query) rank, query "
+        var statement = ""
+        if kw.count < 5 { statement += "select \(clauseSelectList), ts_rank(\(tsv), query) rank, query " }
+        else { statement += "select \(clauseSelectList), ts_rank_cd(\(tsv), query) rank, query " }
+        statement += ""//"select \(clauseSelectList), ts_rank_cd(\(tsv), query) rank, query "
         //+ ",ts_headline('zhcnsearch', \(body), query, 'StartSel=<u-highlight-fts>, StopSel=</u-highlight-fts>') body_h "
-        + "from \(table()), to_tsquery('zhcnsearch', $1) query "
+        + "from \(table()), plainto_tsquery('zhcnsearch', $1) query "
         + "where \(tsv) @@ query order by rank desc"
         let params: [Any] = [kw]
         do {
@@ -91,6 +94,14 @@ extension PostgresStORM {
             LogFile.error("Error: \(error)", logFile: "./StORMlog.txt")
             throw error
         }
+    }
+    open func fts_count(tsv: String, kw: String) throws -> Int {
+        let result = try execRows("SELECT count(*) FROM \(table()) where \(tsv) @@ plainto_tsquery('zhcnsearch', $1)", params: [kw])
+        var count = 0
+        if (result.first != nil) {
+            count = result.first?.data["count"] as? Int ?? 0
+        }
+        return count
     }
 
     /// 查询优化, 更新语句

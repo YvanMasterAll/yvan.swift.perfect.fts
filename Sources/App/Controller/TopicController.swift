@@ -31,7 +31,13 @@ extension TopicController {
                 response.callback(ResultSet.requestIllegal)
                 return
             }
+            var count = request.param(name: "count")?.toInt()
             do {
+                if count == nil {
+                    count = try self.topicService.search(kw: kw)
+                    response.callback(Result(code: .success, count: count!))
+                    return
+                }
                 let list = try self.topicService.search(kw: kw, cursor: request.cursor())
                 response.callback(Result(code: .success, data: list))
             } catch {

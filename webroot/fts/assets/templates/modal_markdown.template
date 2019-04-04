@@ -1,0 +1,6 @@
+<div class="c-modal c-modal--markdown">
+	<div class="c-modal__wrap">
+		<div class="c-button--close"></div>
+		<div class="c-modal__content"></div>
+	</div>
+</div>

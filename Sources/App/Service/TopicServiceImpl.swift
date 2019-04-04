@@ -24,5 +24,12 @@ class TopicServiceImpl: TopicService {
     func search(kw: String, cursor: StORMCursor) throws -> [[String : Any]] {
         return try topicModel.search(kw: kw, cursor: cursor)
     }
+    
+    /// 结果数量
+    ///
+    /// - Returns: 数量
+    func search(kw: String) throws -> Int {
+        return try topicModel.search(kw: kw)
+    }
 }
 

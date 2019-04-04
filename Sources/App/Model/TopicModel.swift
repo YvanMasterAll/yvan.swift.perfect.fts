@@ -63,14 +63,18 @@ extension TopicModel {
             let ws = k.query.replacingOccurrences(of: " ", with: "")
                 .replacingOccurrences(of: "'", with: "")
                 .split("&")
-            let ps = headline(ws: ws, body: k.body)
+            let (ps, ts) = headline(ws: ws, body: k.body, title: k.title)
             topic["body_hp"] = ps
+            topic["title"] = ts
             return topic
         }
     }
+    func search(kw: String) throws -> Int {
+        return try fts_count(tsv: _tsv, kw: kw)
+    }
     
     //MARK: - 关键字高亮
-    func headline(ws: [String], body: String) -> String {
+    func headline(ws: [String], body: String, title: String) -> (String, String) {
         var ps = ""
         let _ps = body.split("\n")
         var pc = 0
@@ -85,7 +89,19 @@ extension TopicModel {
             }
             if ps.count > 200 { break }
         }
-        return ps
+        var ts = title
+        var ws_c = 0
+        var ws_d: [Int: [String]] = [:]
+        ws.forEach { w in
+            let c = w.count
+            if ws_d[c] == nil { ws_d[c] = [w] } else { ws_d[c]?.append(w) }
+            ws_c = ws_c > c ? ws_c:c
+        }
+        let ws_t = ws_d[ws_c]
+        ws_t?.forEach { w in
+            ts = ts.replacingOccurrences(of: w, with: "<u-highlight-fts>\(w)</u-highlight-fts>", options: .caseInsensitive)
+        }
+        return (ps, ts)
     }
     
     //MARK: - 话题添加

@@ -29,6 +29,10 @@ struct Result {
         self.code = code
         self.dataDicts = data
     }
+    init(code: ResultCode, count: Int) {
+        self.code = code
+        self.count = count
+    }
     init(code: ResultCode, msg: String, data: [Any]) {
         self.code = code
         self.msg = msg
@@ -44,6 +48,11 @@ struct Result {
         self.msg = msg
         self.dataDicts = data
     }
+    init(code: ResultCode, msg: String, count: Int) {
+        self.code = code
+        self.msg = msg
+        self.count = count
+    }
     
     mutating func setCmd(cmd: SocketCmdType) {
         self.cmd = cmd
@@ -53,6 +62,7 @@ struct Result {
         var dict = [String: Any]()
         dict["code"] = code.value()
         dict["msg"] = msg ?? code.msg()
+        dict["count"] = count
         dict["cmd"] = cmd?.value
         dict["dataArray"] = dataArray
         dict["dataDict"] = dataDict
@@ -63,6 +73,7 @@ struct Result {
     //MARK: - 私有成员
     fileprivate var code        : ResultCode!
     fileprivate var msg         : String?
+    fileprivate var count       : Int?
     fileprivate var dataArray   : [Any]?
     fileprivate var dataDict    : [String: Any]?
     fileprivate var dataDicts   : [[String: Any]]?

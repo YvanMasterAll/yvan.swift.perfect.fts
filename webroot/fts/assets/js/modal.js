@@ -12,30 +12,58 @@
     function e(r) {
         this.o = t.extend({}, t.fn[o].defaults, r), this.init()
     }
-    let o = "modal"
+    let o = "modal"             //alias
     e.prototype = {
         init: function() {
             let e = this
             e.type = e.o.type
             e.parent = e.o.parent
-            e.build()
+            e.render()
         },
-        build: function() {
+        remains: {},
+        render: function() {
             let e = this
             if(e.type == "markdown") {
-                $(e.parent).append(e.templates.markdown)
+                e.templates.markdown().then(html => {
+                    $(e.parent).append(html)
+                    $('.c-modal.c-modal--markdown .c-button--close').on('click', function() {
+                        e.destory()
+                    })
+                    $.each(e.remains, function(i, v) { v() })
+                    e.remains = {}
+                })
             }
         },
         destory: function(){
             let e = this
             if(e.type == "markdown") { $('.c-modal--markdown').remove() }
         },
-        append: function(b) {
+        append: function(b) {   //hook
             let e = this
-            if(e.type == "markdown") { $('.c-modal.c-modal--markdown > .c-modal__content').html(b) }
+            if(e.type == "markdown") { e.remains.append = () => $('.c-modal.c-modal--markdown .c-modal__content').html(b) }
         },
         templates: {
-            markdown: '<div class="c-modal c-modal--markdown"><div class="c-modal__content"></div></div>'
+            markdown: function() {
+                let e = this
+                return new Promise(function(r, j) {
+                    e.get("/assets/templates/modal_markdown.template", r, j)
+                })
+            },
+            get: (p, r, j) => {
+                $.ajax({
+                    url: p,
+                    type: "get",
+                    dataType: "html",
+                    cache: false,
+                    complete:function(XMLHttpRequest, textStatus){
+                        var html = XMLHttpRequest.responseText
+                        r(html)
+                    },
+                    error:function(XmlHttpRequest, textStatus, errorThrown){
+                        j()
+                    }
+                })
+            }
         }
     },
     t.fn[o] = function(r) {

@@ -16,17 +16,16 @@
 				<p class="c-paragraph u-fsc--16r">文本</p>
 			</div> -->
 		</div>
+		<div class="c-pagination"></div>
 	</div>
 </div>
 
 <script>
 	$(document).ready(function(){
-		//搜索事件
-		$('.c-search>.c-button').on('click', function() {
+		$('.c-search>.c-button').on('click', function() {	//搜索事件
 			search()
 		})
-		//搜索功能
-		function search() {
+		function search() {									//搜索功能
 			//yTest
 			let beginTime = +new Date()
 			let kw = $('.c-search>.c-input').val()
@@ -46,18 +45,11 @@
 		            //data
 		            let json = eval('('+ XMLHttpRequest.responseText + ')')
 		            let code = json.code
-		            let data = json.dataDicts
+		            let count = json.count
+		            fts.count = count
 		            if(fts.result.valid(code)) {
-		            	$('.c-list--fts__item').remove()
-		            	$.each(data, function(i, d) {
-		            		let item = $('<div class="c-list--fts__item">' +
-		            			'<a class="c-heading u-fsc--18m">' + d.title + '</a>' +
-		            			'<p class="c-paragraph u-fsc--16r">' + d.body_hp + '</p>' +
-		            		'</div>')
-		            		$('.c-list--fts').append(item)
-		            	})
-		            	//yTest
-						$('.o-body').modal({type: 'markdown'}).append(marked(data[0].body))
+		            	console.log(count)
+		            	pagination(kw, count)
 		            }
 		            //yTest
 		            let endTime = +new Date()
@@ -68,6 +60,40 @@
 		            console.log("请求失败, 错误代码: " + XmlHttpRequest.status + "!")
 		        }
 		    })
+		}
+		function pagination(kw, count) {
+			$('.c-pagination').pagination({
+			    dataSource: 'http://localhost:8181/api/v1/topic/search',
+			    locator: 'dataDicts',
+			    totalNumber: count,
+			    pageSize: 10,
+			    ajax: {
+			      	data: { kw: kw, count: count },
+			      	type: 'post',
+			        beforeSend: function() {
+			    	    //TODO: 显示菊花
+			        }
+			    },
+			    callback: function(data, pagination) {
+			    	fts.data = data
+			    	$('.c-list--fts__item').remove()
+			        $.each(data, (i, d) => {
+	            		let item = $('<div class="c-list--fts__item" data-id="' + d.id + '">' +
+	            			'<a class="c-heading u-fsc--18m">' + d.title + '</a>' +
+	            			'<p class="c-paragraph u-fsc--16r">' + d.body_hp + '</p>' +
+	            		'</div>')
+	            		$('.c-list--fts').append(item)
+	            	})
+	            	event_topic_show()
+			    }
+			})
+		}
+		function event_topic_show() { 						//话题查看事件
+			$('.c-list--fts__item > .c-heading').off('click').on('click', function() {
+				let id = $(this).parent().data('id')
+				let data = fts.data.find(o => o.id == id)
+				$('.o-body').modal({type: 'markdown'}).append(marked(data.body))
+			})
 		}
 	})
 </script>

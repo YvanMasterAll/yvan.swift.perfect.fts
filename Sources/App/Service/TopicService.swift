@@ -15,4 +15,7 @@ protocol TopicService: class {
     
     //MARK: - 话题搜索
     func search(kw: String, cursor: StORMCursor) throws -> [[String: Any]]
+    
+    //MARK: - 结果数量
+    func search(kw: String) throws -> Int
 }
